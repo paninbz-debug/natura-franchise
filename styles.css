@@ -1,6 +1,6 @@
 /* ============ RESET & BASE ============ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;overflow-x:hidden}
 body{
   font-family:'Manrope',-apple-system,BlinkMacSystemFont,sans-serif;
   font-size:16px;line-height:1.6;color:var(--c-text);
@@ -2048,17 +2048,22 @@ h1,h2,h3,h4{
   .format-card__body{padding:24px 20px}
   .format-card__desc{font-size:13px}
 
+  /* --- Cases CTA --- */
+  .cases__cta{padding:24px 16px}
+
   /* --- Calculator --- */
-  .calc__wrap{padding:20px 16px}
+  .calc__wrap{padding:20px 16px;overflow:hidden}
   .calc__hero-value{font-size:36px}
   .calc__toggle{grid-template-columns:repeat(2,1fr)}
   .calc__field label{font-size:12px}
   .calc__field{margin-bottom:24px}
-  .calc__output{padding:24px 16px}
-  .calc__row b{font-size:20px}
-  .calc__row--accent b{font-size:24px}
-  .calc__row span{font-size:13px}
-  .calc__tab{padding:10px 12px;font-size:12px}
+  .calc__output{padding:24px 16px;overflow:hidden}
+  .calc__tabs{overflow:hidden;border-radius:100px}
+  .calc__tab{padding:10px 8px;font-size:11px;min-width:0;overflow:hidden;text-overflow:ellipsis}
+  .calc__row{gap:8px;flex-wrap:nowrap;overflow:hidden}
+  .calc__row b{font-size:18px;white-space:nowrap;text-align:right;flex-shrink:0}
+  .calc__row--accent b{font-size:22px}
+  .calc__row span{font-size:12px;flex-shrink:1;min-width:0}
   .calc__compare-item b{font-size:18px}
 
   /* --- Philosophy --- */
@@ -2172,4 +2177,9 @@ h1,h2,h3,h4{
   .hero__socialproof .hero__stars{font-size:12px}
   .calc__toggle{grid-template-columns:1fr}
   .calc__compare{grid-template-columns:1fr}
+  .calc__row b{font-size:16px}
+  .calc__row--accent b{font-size:20px}
+  .calc__hero-value{font-size:30px}
+  .cases__cta{padding:20px 12px}
+  .cases__cta p{font-size:15px}
 }
