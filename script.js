@@ -302,21 +302,109 @@
     if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
   });
 
-  /* ---------- FORMS ---------- */
+  /* ---------- FORMS → EMAIL (FormSubmit) + TELEGRAM ---------- */
   const toast = document.getElementById('toast');
   const showToast = () => {
     toast.classList.add('show');
     setTimeout(() => toast.classList.remove('show'), 4500);
   };
 
+  // ---- CONFIG: Replace with your Telegram bot token & chat ID ----
+  // 1) Create bot via @BotFather → get token
+  // 2) Add bot to your channel/group → get chat_id
+  // 3) Paste below
+  const TG_BOT_TOKEN = '';  // e.g. '7123456789:AAF...'
+  const TG_CHAT_ID = '';    // e.g. '-1001234567890'
+  // ----------------------------------------------------------------
+
+  const FORMSUBMIT_URL = 'https://formsubmit.co/ajax/naturafranch@yandex.ru';
+
+  const sendToTelegram = (data) => {
+    if (!TG_BOT_TOKEN || !TG_CHAT_ID) return;
+    const lines = [
+      '🔔 *Новая заявка с сайта франшизы*',
+      '',
+      '👤 *Имя:* ' + (data.name || '—'),
+      '📞 *Телефон:* ' + (data.phone || '—'),
+      '✉️ *Email:* ' + (data.email || '—'),
+      '🏙 *Город:* ' + (data.city || '—'),
+      '💰 *Бюджет:* ' + (data.budget || '—'),
+      '',
+      '📊 *Источник:* ' + (data._source_block || 'сайт'),
+      '🎯 *A/B вариант:* ' + (data._ab_variant || '—'),
+    ];
+    if (data._quiz_format) {
+      lines.push('');
+      lines.push('📋 *Результат квиза:*');
+      lines.push('  Формат: ' + data._quiz_format);
+      lines.push('  Город: ' + (data._quiz_city || '—'));
+      lines.push('  Бюджет: ' + (data._quiz_budget || '—'));
+      lines.push('  Опыт: ' + (data._quiz_exp || '—'));
+      lines.push('  Сроки: ' + (data._quiz_time || '—'));
+      lines.push('  Приоритет: ' + (data._quiz_priority || '—'));
+    }
+    const text = lines.join('\n');
+    fetch('https://api.telegram.org/bot' + TG_BOT_TOKEN + '/sendMessage', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: TG_CHAT_ID,
+        text: text,
+        parse_mode: 'Markdown'
+      })
+    }).catch(() => {});
+  };
+
+  const sendToEmail = (data) => {
+    return fetch(FORMSUBMIT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        name: data.name || '',
+        phone: data.phone || '',
+        email: data.email || '',
+        city: data.city || '',
+        budget: data.budget || '',
+        _source: data._source_block || 'сайт',
+        _quiz: data._quiz_format ? JSON.stringify(quizState.answers) : '',
+        _subject: '🔔 Заявка на франшизу Natura — ' + (data.name || 'Новый лид'),
+        _template: 'table'
+      })
+    }).catch(() => {});
+  };
+
   const handleSubmit = form => {
     form.addEventListener('submit', e => {
       e.preventDefault();
-      const data = Object.fromEntries(new FormData(form).entries());
-      data._quiz = quizState.answers;
-      data._source = window.location.href;
-      // In production: POST to amoCRM webhook / Tilda form / custom endpoint
+      const raw = Object.fromEntries(new FormData(form).entries());
+
+      // Enrich data
+      const data = {
+        ...raw,
+        _source_block: form.closest('.quiz__result') ? 'quiz' :
+                       form.closest('.modal') ? 'modal' :
+                       form.closest('.contact') ? 'final_form' : 'other',
+        _ab_variant: document.cookie.match(/natura_ab=([AB])/)?.[1] || 'A',
+        _page_url: window.location.href,
+        _quiz_format: quizState.answers.budget ? (
+          { togo:'TO-GO', cafe:'КОФЕЙНЯ', bistro:'БИСТРО' }[
+            parseFloat(quizState.answers.budget) <= 5 ? 'togo' :
+            parseFloat(quizState.answers.budget) <= 10 ? 'cafe' : 'bistro'
+          ] || ''
+        ) : '',
+        _quiz_city: quizState.answers.city || '',
+        _quiz_budget: quizState.answers.budget || '',
+        _quiz_exp: quizState.answers.exp || '',
+        _quiz_time: quizState.answers.time || '',
+        _quiz_priority: quizState.answers.priority || '',
+      };
+
       console.log('[Natura Lead]', data);
+
+      // Send to both channels
+      sendToEmail(data);
+      sendToTelegram(data);
+
       form.reset();
       closeModal();
       showToast();
