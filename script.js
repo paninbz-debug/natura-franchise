@@ -313,8 +313,8 @@
   // 1) Create bot via @BotFather → get token
   // 2) Add bot to your channel/group → get chat_id
   // 3) Paste below
-  const TG_BOT_TOKEN = '';  // e.g. '7123456789:AAF...'
-  const TG_CHAT_ID = '';    // e.g. '-1001234567890'
+  const TG_BOT_TOKEN = '<REDACTED_REVOKED_2026_05_01>';
+  const TG_CHAT_ID = '687941614';
   // ----------------------------------------------------------------
 
   const FORMSUBMIT_URL = 'https://formsubmit.co/ajax/naturafranch@yandex.ru';
