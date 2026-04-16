@@ -319,30 +319,43 @@
 
   const FORMSUBMIT_URL = 'https://formsubmit.co/ajax/naturafranch@yandex.ru';
 
+  // Human-readable labels for quiz answers
+  const CITY_LABELS = { msk:'Москва/СПб', mil:'Миллионник', '500':'500тыс–1млн', '100':'100–500тыс', small:'до 100тыс', unknown:'Не определился' };
+  const BUDGET_LABELS = { '2.5':'2,5–5 млн', '5':'5–10 млн', '10':'10–15 млн', '15':'15–25 млн', '25':'25+ млн', unknown:'Не определился' };
+  const EXP_LABELS = { 'new':'Первый бизнес', other:'Опыт в другой сфере', horeca:'Опыт в HoReCa', investor:'Действующий предприниматель', multi:'Мультифранчайзи' };
+  const TIME_LABELS = { hot:'Готов сейчас', '3m':'3 месяца', '6m':'6 месяцев', later:'Позже', research:'Изучает рынок' };
+  const PRIORITY_LABELS = { roi:'Окупаемость', brand:'Надёжный бренд', support:'Сопровождение', concept:'Уникальная концепция', passive:'Пассивный доход' };
+
   const sendToTelegram = (data) => {
     if (!TG_BOT_TOKEN || !TG_CHAT_ID) return;
+
     const lines = [
       '🔔 *Новая заявка с сайта франшизы*',
       '',
       '👤 *Имя:* ' + (data.name || '—'),
       '📞 *Телефон:* ' + (data.phone || '—'),
-      '✉️ *Email:* ' + (data.email || '—'),
-      '🏙 *Город:* ' + (data.city || '—'),
-      '💰 *Бюджет:* ' + (data.budget || '—'),
-      '',
-      '📊 *Источник:* ' + (data._source_block || 'сайт'),
-      '🎯 *A/B вариант:* ' + (data._ab_variant || '—'),
     ];
+
+    // Only show fields that have values
+    if (data.email) lines.push('✉️ *Email:* ' + data.email);
+    if (data.city) lines.push('🏙 *Город:* ' + data.city);
+    if (data.budget) lines.push('💰 *Бюджет:* ' + data.budget);
+
+    lines.push('');
+    lines.push('📊 *Источник:* ' + (data._source_block || 'сайт') + '  |  *A/B:* ' + (data._ab_variant || '—'));
+
     if (data._quiz_format) {
+      const a = quizState.answers;
       lines.push('');
-      lines.push('📋 *Результат квиза:*');
-      lines.push('  Формат: ' + data._quiz_format);
-      lines.push('  Город: ' + (data._quiz_city || '—'));
-      lines.push('  Бюджет: ' + (data._quiz_budget || '—'));
-      lines.push('  Опыт: ' + (data._quiz_exp || '—'));
-      lines.push('  Сроки: ' + (data._quiz_time || '—'));
-      lines.push('  Приоритет: ' + (data._quiz_priority || '—'));
+      lines.push('📋 *Квиз:*');
+      lines.push('  Формат: *' + data._quiz_format + '*');
+      lines.push('  Город: ' + (CITY_LABELS[a.city] || a.city || '—'));
+      lines.push('  Бюджет: ' + (BUDGET_LABELS[a.budget] || a.budget || '—'));
+      lines.push('  Опыт: ' + (EXP_LABELS[a.exp] || a.exp || '—'));
+      lines.push('  Сроки: ' + (TIME_LABELS[a.time] || a.time || '—'));
+      lines.push('  Приоритет: ' + (PRIORITY_LABELS[a.priority] || a.priority || '—'));
     }
+
     const text = lines.join('\n');
     fetch('https://api.telegram.org/bot' + TG_BOT_TOKEN + '/sendMessage', {
       method: 'POST',
