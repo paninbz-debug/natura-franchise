@@ -1687,6 +1687,27 @@ h1,h2,h3,h4{
   border-color:var(--c-primary);
   background:#fff;
 }
+.quiz__consent{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:13px;
+  color:var(--c-text-soft);
+  cursor:pointer;
+  padding:4px 0;
+}
+.quiz__consent input[type="checkbox"]{
+  width:18px;
+  height:18px;
+  accent-color:var(--c-primary);
+  flex-shrink:0;
+  cursor:pointer;
+}
+.quiz__consent a{
+  color:var(--c-primary);
+  text-decoration:underline;
+  text-underline-offset:2px;
+}
 
 /* ============ FOUNDERS QUOTE ============ */
 .founders__quote-wrap{
