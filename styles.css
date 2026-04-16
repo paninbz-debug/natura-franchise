@@ -48,6 +48,7 @@ h1,h2,h3,h4{
   line-height:1.15;
   letter-spacing:-.01em;
   color:var(--c-dark);
+  overflow-wrap:break-word;
 }
 .accent{color:var(--c-primary);font-style:italic}
 
@@ -1984,6 +1985,8 @@ h1,h2,h3,h4{
 }
 
 @media (max-width:1024px){
+  .header{top:0}
+  .hero{padding:80px 0 60px}
   .scarcity__grid{grid-template-columns:repeat(2,1fr)}
   .cases__grid{grid-template-columns:1fr}
   .founders__grid{grid-template-columns:1fr}
@@ -1995,37 +1998,178 @@ h1,h2,h3,h4{
 }
 
 @media (max-width:640px){
-  .section{padding:72px 0}
-  .scarcity__grid{grid-template-columns:1fr}
-  .contact__final-form{flex-direction:column}
-  .contact__final-alt{flex-direction:column;gap:12px}
-  .calc__hero-value{font-size:40px}
-  .quiz__wrap{padding:32px 20px}
-  .quiz__option{padding:16px 18px;font-size:14px}
+  /* --- Layout --- */
+  .section{padding:64px 0}
+  .section__head{margin-bottom:36px}
+  .container{padding:0 16px}
+
+  /* --- Announcement bar --- */
+  .announce{font-size:11px;padding:8px 0}
+  .announce .container{gap:4px;padding:0 12px}
+
+  /* --- Header --- */
+  .header__actions{display:none}
+
+  /* --- Hero --- */
+  .hero{padding:100px 0 48px;min-height:auto}
+  .hero__title{font-size:clamp(26px,7vw,40px);margin-bottom:18px}
+  .hero__title br{display:none}
+  .hero__subtitle{font-size:15px;margin-bottom:28px;line-height:1.55}
+  .hero__socialproof{font-size:11px;padding:8px 14px;gap:8px;margin-bottom:20px}
+  .hero__metrics{gap:10px;margin-bottom:28px}
+  .metric{padding:14px 12px}
+  .metric__value{font-size:clamp(18px,4.5vw,24px)}
+  .metric__label{font-size:11px;letter-spacing:.05em}
+  .hero__cta{flex-direction:column;align-items:stretch;gap:10px;margin-bottom:16px}
+  .hero__cta .btn{width:100%;padding:14px 20px;font-size:14px}
+  .hero__microcopy{font-size:11px}
+  .hero__scroll{display:none}
+
+  /* --- Trust bar --- */
+  .trust{padding:20px 0}
+  .trust__divider{display:none}
+  .trust .container{gap:10px;justify-content:center;flex-wrap:wrap}
+  .trust__item{font-size:12px}
+  .trust__item strong{display:inline}
+
+  /* --- Gallery --- */
+  .gallery{padding:0 0 48px}
   .gallery__track img{width:180px;height:130px}
   .gallery__track{gap:12px}
-  .hero__socialproof{font-size:11px;padding:8px 14px;gap:8px}
-  .announce{font-size:11px}
+  .gallery__caption p{font-size:15px}
+  .gallery__marquee{margin-bottom:32px}
+
+  /* --- Cases --- */
   .pnl-row--accent b{font-size:18px}
-  .section__head{margin-bottom:40px}
-  .container{padding:0 20px}
-  .hero{padding:120px 0 60px}
-  .hero__metrics{gap:12px}
-  .metric{padding:16px 14px}
-  .hero__cta{flex-direction:column;align-items:stretch}
-  .hero__cta .btn{width:100%}
+
+  /* --- Formats --- */
   .formats__grid,.why__grid,.founders__grid,.awards__grid,.pillars{grid-template-columns:1fr}
-  .process__timeline{grid-template-columns:1fr}
-  .philosophy__stats{grid-template-columns:1fr;gap:16px}
-  .contact__form{padding:28px 24px}
-  .calc__wrap{padding:24px}
+  .format-card__title{font-size:28px}
+  .format-card__body{padding:24px 20px}
+  .format-card__desc{font-size:13px}
+
+  /* --- Calculator --- */
+  .calc__wrap{padding:20px 16px}
+  .calc__hero-value{font-size:36px}
   .calc__toggle{grid-template-columns:repeat(2,1fr)}
-  .founders__cta{padding:32px 20px}
-  .footer__inner{grid-template-columns:1fr;gap:32px}
+  .calc__field label{font-size:12px}
+  .calc__field{margin-bottom:24px}
+  .calc__output{padding:24px 16px}
+  .calc__row b{font-size:20px}
+  .calc__row--accent b{font-size:24px}
+  .calc__row span{font-size:13px}
+  .calc__tab{padding:10px 12px;font-size:12px}
+  .calc__compare-item b{font-size:18px}
+
+  /* --- Philosophy --- */
+  .philosophy__grid{gap:32px;margin-bottom:48px}
+  .philosophy__stats{grid-template-columns:1fr;gap:16px}
+  .philosophy__stats b{font-size:36px}
+  .philosophy__lead{font-size:15px}
+
+  /* --- Pillars --- */
+  .pillar{padding:28px 20px}
+  .pillar h3{font-size:20px}
+
+  /* --- Why --- */
+  .why__item{padding:28px 20px}
+  .why__item h3{font-size:22px}
+  .why__num{font-size:56px}
+
+  /* --- Process --- */
+  .process__timeline{grid-template-columns:1fr}
+  .step__num{width:48px;height:48px;font-size:22px;margin-bottom:14px}
+  .step h3{font-size:20px}
+  .step p{font-size:12px}
+
+  /* --- Scarcity --- */
+  .scarcity__grid{grid-template-columns:1fr}
+  .scarcity__num{font-size:36px}
+  .scarcity__lead{font-size:15px}
+  .scarcity__item{padding:22px 16px}
+
+  /* --- Founders --- */
+  .founder__body{padding:24px 20px}
+  .founder h3{font-size:24px}
+  .founders__cta{padding:28px 16px}
+  .founders__cta blockquote{font-size:clamp(18px,4.5vw,26px)}
+
+  /* --- Awards --- */
+  .award{padding:28px 16px}
+  .award__title{font-size:20px}
+
+  /* --- FAQ --- */
+  .faq__item summary{padding:18px 20px;font-size:15px;gap:14px}
+  .faq__body{padding:0 20px 20px;font-size:14px}
+
+  /* --- Quiz --- */
+  .quiz__wrap{padding:28px 16px}
+  .quiz__option{padding:14px 16px;font-size:14px}
+  .quiz__back{top:16px;left:16px;font-size:12px}
+  .quiz__result-card{padding:20px 16px}
+  .quiz__result-head h3{font-size:26px}
+  .quiz__result-row b{font-size:18px}
+  .quiz__q-title{margin-bottom:24px}
+
+  /* --- Contact --- */
+  .contact{padding-bottom:80px}
+  .contact__form{padding:24px 16px}
+  .contact__form-title{font-size:22px;margin-bottom:16px}
+  .contact__channel{padding:16px;gap:14px}
+  .contact__channel-icon{width:40px;height:40px;font-size:18px}
+  .contact__channel b{font-size:14px}
+  .contact__final-form{flex-direction:column}
+  .contact__final-form input{padding:16px 20px;font-size:14px;min-width:0}
+  .contact__final-alt{flex-direction:column;gap:12px}
+  .contact__final-lead{font-size:15px}
+
+  /* --- Footer --- */
+  .footer__inner{grid-template-columns:1fr;gap:28px}
   .footer__bottom{flex-direction:column;gap:8px;text-align:center}
-  .fab{bottom:20px;right:20px}
-  .fab__btn{width:52px;height:52px}
-  .trust__divider{display:none}
-  .trust .container{gap:12px}
-  .trust__item{font-size:13px}
+
+  /* --- Modal --- */
+  .modal{padding:16px}
+  .modal__dialog{padding:32px 20px;max-width:100%}
+  .modal__title{font-size:24px}
+  .modal__lead{font-size:13px}
+
+  /* --- Toast --- */
+  .toast{top:16px;right:16px;left:16px;max-width:none}
+
+  /* --- FAB --- */
+  .fab{bottom:16px;right:16px;gap:10px}
+  .fab__btn{width:48px;height:48px}
+  .fab__btn svg{width:20px;height:20px}
+
+  /* --- Not for everyone --- */
+  .notfor__grid{gap:12px}
+  .notfor__item{padding:20px 16px;gap:14px}
+  .notfor__item h4{font-size:18px}
+  .notfor__yes{padding:28px 20px}
+  .notfor__yes h3{font-size:22px}
+  .notfor__yes ul{gap:10px 20px}
+  .notfor__yes li{font-size:14px}
+  .notfor__lead{font-size:15px;margin-bottom:32px}
+
+  /* --- Founder cards --- */
+  .founder-card{padding:28px 20px}
+  .founder-card h3{font-size:22px}
+  .founders__quote-wrap{margin-bottom:48px}
+  .founders__mark{font-size:100px;height:48px}
+}
+
+/* ============ VERY SMALL SCREENS ============ */
+@media (max-width:380px){
+  .container{padding:0 12px}
+  .hero__title{font-size:24px}
+  .hero__metrics{grid-template-columns:1fr}
+  .metric{padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .metric__value{margin-bottom:0;font-size:20px}
+  .metric__label{text-align:right}
+  .section__title{font-size:clamp(24px,6vw,36px)}
+  .scarcity__title{font-size:clamp(24px,6vw,36px)}
+  .hero__socialproof{font-size:10px;padding:6px 12px}
+  .hero__socialproof .hero__stars{font-size:12px}
+  .calc__toggle{grid-template-columns:1fr}
+  .calc__compare{grid-template-columns:1fr}
 }
