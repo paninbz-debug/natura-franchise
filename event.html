@@ -49,7 +49,7 @@
 .ev-hero__note b{color:var(--c-accent);font-weight:700}
 
 .ev-hero__card{background:#fff;border-radius:var(--radius-xl);padding:0;box-shadow:var(--shadow-lg);position:relative;overflow:hidden}
-.ev-hero__card-photo{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;object-position:center 30%;background:#e8e2d5}
+.ev-hero__card-photo{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;object-position:40% center;background:#e8e2d5}
 .ev-hero__card-body{padding:28px 32px 32px}
 .ev-hero__card-badge{position:absolute;top:24px;right:24px;background:var(--c-accent);color:#fff;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:8px 16px;border-radius:20px;box-shadow:0 6px 16px rgba(212,131,90,.4);z-index:2}
 .ev-hero__card h3{font-size:20px;margin-bottom:16px;font-family:'Manrope',sans-serif;font-weight:700;letter-spacing:-.01em}
@@ -80,12 +80,14 @@
 .ev-hosts{display:grid;grid-template-columns:repeat(2,1fr);gap:32px}
 .ev-host{background:#fff;border-radius:var(--radius-lg);padding:40px;box-shadow:var(--shadow-sm);border:1px solid var(--c-line)}
 .ev-host__top{display:flex;align-items:center;gap:20px;margin-bottom:24px}
-.ev-host__avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--c-primary),var(--c-primary-light));color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;flex-shrink:0}
+.ev-host__avatar{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--c-primary),var(--c-primary-light));color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;flex-shrink:0;overflow:hidden}
 .ev-host__avatar--2{background:linear-gradient(135deg,var(--c-accent),#e0a485)}
+.ev-host__avatar img{width:100%;height:100%;object-fit:cover;display:block}
 .ev-host__name{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;margin-bottom:4px;line-height:1.1}
 .ev-host__role{font-size:14px;color:var(--c-text-soft)}
-.ev-host__bio{font-size:15px;line-height:1.6;color:var(--c-text)}
+.ev-host__bio{font-size:15px;line-height:1.65;color:var(--c-text)}
 .ev-host__bio b{color:var(--c-primary)}
+.ev-host__bio em{color:var(--c-accent);font-style:normal;font-weight:600}
 
 /* Topics */
 .ev-topics{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
@@ -209,12 +211,12 @@
         <a href="#register" class="ev-btn ev-btn--primary">Записаться на завтрак →</a>
         <a href="#topics" class="ev-btn ev-btn--ghost">О чём поговорим</a>
       </div>
-      <p class="ev-hero__note"><b>Участие бесплатное.</b> Завтрак из собственной кондитерской за счёт Natura.</p>
+      <p class="ev-hero__note"><b>Участие бесплатное.</b> Завтрак от Natura: еда от шефа, десерты из нашей кондитерской и кофе собственной обжарки.</p>
     </div>
 
     <aside class="ev-hero__card">
       <div class="ev-hero__card-badge">26.04.2026</div>
-      <img src="img/natura/team-group.jpg" alt="Команда Natura Coffee у входа на Бумажном проезде" class="ev-hero__card-photo">
+      <img src="img/natura/founders-awards.jpg" alt="Александр Данилов и Амик Григорян — Russian Hospitality Awards 2025, «Лучшая кофейня»" class="ev-hero__card-photo">
       <div class="ev-hero__card-body">
         <h3>Александр Данилов · Амик Григорян</h3>
         <div class="ev-hero__details">
@@ -240,23 +242,23 @@
     <div class="ev-hosts">
       <div class="ev-host">
         <div class="ev-host__top">
-          <div class="ev-host__avatar">АД</div>
+          <div class="ev-host__avatar"><img src="img/natura/founder-sasha.jpg" alt="Александр Данилов"></div>
           <div>
             <div class="ev-host__name">Александр Данилов</div>
-            <div class="ev-host__role">Сооснователь Natura Coffee</div>
+            <div class="ev-host__role">Сооснователь сети кофеен-бистро «Натура»</div>
           </div>
         </div>
-        <p class="ev-host__bio">Отвечает за <b>масштабирование сети</b>: развитие франшизы, новые города, подбор локаций и запуск точек за пределами Тулы и Москвы.</p>
+        <p class="ev-host__bio">Входит в шорт-лист <em>«Лучших топ-менеджеров индустрии»</em> премии «Пальмовая ветвь ресторанного бизнеса». За 3 года <b>масштабировал «Натуру» ×10</b>. Отвечает за маркетинг и запуск новых точек.</p>
       </div>
       <div class="ev-host">
         <div class="ev-host__top">
-          <div class="ev-host__avatar ev-host__avatar--2">АГ</div>
+          <div class="ev-host__avatar ev-host__avatar--2"><img src="img/natura/founder-amik.jpg" alt="Амик Григорян"></div>
           <div>
             <div class="ev-host__name">Амик Григорян</div>
-            <div class="ev-host__role">Сооснователь Natura Coffee</div>
+            <div class="ev-host__role">Сооснователь сети кофеен-бистро «Натура»</div>
           </div>
         </div>
-        <p class="ev-host__bio">Отвечает за <b>операционку и финансы</b>: экономика точек, стандарты, команда. Знает цифры каждой кофейни и держит гибридный формат «кофейня + бистро» в плюсе.</p>
+        <p class="ev-host__bio">Входит в шорт-лист <em>«Лучших топ-менеджеров индустрии»</em> премии «Пальмовая ветвь ресторанного бизнеса». Отвечает за <b>операционку и экономику сети</b>. Построил гибридный формат «кофейня + бистро», который стабильно работает в разных регионах.</p>
       </div>
     </div>
   </div>
@@ -309,7 +311,7 @@
     <div class="ev-venue__info">
       <div>
         <h3>Москва, Бумажный проезд, 19</h3>
-        <p>Наша новая кофейня в Москве — только что открылись. Формат «кофейня + бистро», собственная обжарка и кондитерская. Та самая модель, которую мы масштабируем по России.</p>
+        <p>Новая локация в бизнес-центре Stone. Кухня от бренд-шефа, собственная обжарка, кондитерская, легендарная кофемашина La Marzocco — всё, что обсуждаем, увидите вживую.</p>
         <p>Приходите за 10 минут до начала — успеете осмотреться и взять кофе до старта разговора.</p>
         <address>📍 5 минут от м. Савёловская / Белорусская</address>
       </div>
