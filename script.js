@@ -453,10 +453,22 @@
   }, { threshold: 0.12, rootMargin: '0px 0px -80px 0px' });
 
   document.querySelectorAll(
-    '.format-card, .pillar, .why__item, .step, .case, .award, .faq__item, .section__head, .founder-card, .notfor__item, .scarcity__item'
+    '.format-card, .pillar, .why__item, .step, .case, .award, .faq__item, .section__head, .founder-card, .notfor__item, .scarcity__item, .article-card, .articles__cta'
   ).forEach(el => {
     el.classList.add('reveal');
     io.observe(el);
+  });
+
+  /* ---------- ARTICLES: track click (Я.Метрика TODO) ---------- */
+  document.querySelectorAll('.article-card, .articles__cta').forEach(el => {
+    el.addEventListener('click', () => {
+      const article = el.dataset.article || 'unknown';
+      const title = el.querySelector('.article-card__title, .articles__cta-title')?.textContent.trim() || '';
+      // TODO: подключить Я.Метрику и заменить на ym(<counter_id>, 'reachGoal', 'click_article', { article, title });
+      if (typeof window.ym === 'function' && window.NATURA_YM_ID) {
+        window.ym(window.NATURA_YM_ID, 'reachGoal', 'click_article', { article, title });
+      }
+    });
   });
 
   /* ---------- SMOOTH SCROLL ---------- */
