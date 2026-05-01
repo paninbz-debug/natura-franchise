@@ -470,8 +470,12 @@ const EVENT = {
   place: 'Москва, Бумажный проезд, 19'
 };
 
-const TG_BOT_TOKEN = '8644422619:AAFTU_MhQQISM4Gy2U2JoNso2I-fKo1IbZ4';
-const TG_CHAT_ID = '687941614';
+// Telegram lead-channel intentionally disabled client-side — see script.js
+// for full incident note. Hardcoded token leaked through this public repo
+// and was revoked 2026-05-01. FormSubmit email below remains the active
+// notification channel until a server-side relay is in place.
+const TG_BOT_TOKEN = '';
+const TG_CHAT_ID = '';
 const FORMSUBMIT_URL = 'https://formsubmit.co/ajax/naturafranch@yandex.ru';
 
 function buildTelegramText(d) {
@@ -492,6 +496,7 @@ function buildTelegramText(d) {
 }
 
 async function sendTelegram(d) {
+  if (!TG_BOT_TOKEN || !TG_CHAT_ID) return;
   try {
     await fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
       method: 'POST',

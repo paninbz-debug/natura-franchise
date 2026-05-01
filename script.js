@@ -309,12 +309,21 @@
     setTimeout(() => toast.classList.remove('show'), 4500);
   };
 
-  // ---- CONFIG: Replace with your Telegram bot token & chat ID ----
-  // 1) Create bot via @BotFather → get token
-  // 2) Add bot to your channel/group → get chat_id
-  // 3) Paste below
-  const TG_BOT_TOKEN = '8644422619:AAFTU_MhQQISM4Gy2U2JoNso2I-fKo1IbZ4';
-  const TG_CHAT_ID = '687941614';
+  // ---- Telegram lead-channel — INTENTIONALLY DISABLED CLIENT-SIDE ----
+  // Hardcoding a bot token in browser-shipped JS leaks it to every visitor
+  // (DevTools → Network → Sources). The token previously committed here was
+  // revoked 2026-05-01 after takeover (#FREEVPN bot rename incident).
+  //
+  // Permanent fix path (not in this commit, see leak-incident report):
+  //   1. Stand up a server-side relay (Cloudflare Worker / Vercel Function /
+  //      simple Node endpoint) that proxies form submissions to Telegram
+  //      with the bot token loaded from the relay's env var.
+  //   2. Replace this constant with a fetch to the relay URL.
+  // Until the relay exists, lead notifications fall back to FormSubmit
+  // email only — the `if (!TG_BOT_TOKEN || !TG_CHAT_ID) return;` guard in
+  // sendToTelegram() makes that path a no-op.
+  const TG_BOT_TOKEN = '';
+  const TG_CHAT_ID = '';
   // ----------------------------------------------------------------
 
   const FORMSUBMIT_URL = 'https://formsubmit.co/ajax/naturafranch@yandex.ru';
