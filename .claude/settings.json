@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 /Users/danilpanin/Downloads/_Vault/scripts/queue_continue.py"
+          }
+        ]
+      }
+    ]
+  }
+}
