@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # natura-franchise — Sprint 15 smoke test
-# Static-site: HTML/CSS/JS, нет vitest/playwright. 5 критичных curl+grep проверок.
+# Static-site: HTML/CSS/JS, нет vitest/playwright. 7 критичных curl+grep проверок.
 # Запуск:
 #   ./ops/smoke.sh                                  # против prod (CNAME из ниже)
 #   NATURA_HOST=https://staging.example.com ops/smoke.sh
-# Exit 0 — все 5 ✅. Exit 1 — хоть одна ❌.
+# Exit 0 — все 7 ✅. Exit 1 — хоть одна ❌.
 #
 # Создан watcher'ом 2026-05-03 (preemptive baseline для Sprint 15 sub-agent).
 # Sub-agent может расширять/уточнять критерии (например после добавления Sentry CDN —
@@ -39,11 +39,17 @@ check() {
   fi
 
   if [ -n "$expect_body" ]; then
-    if ! printf '%s' "$body" | grep -qF "$expect_body"; then
-      echo "❌ $name — body missing «$expect_body» ($url)"
-      FAIL=$((FAIL+1))
-      return 1
-    fi
+    # NB: `case` вместо `printf | grep -qF` — под `set -o pipefail` grep
+    # закрывает stdin при первом матче и printf ловит SIGPIPE → весь pipe
+    # считается failed на body >50KB (index.html — 72KB).
+    case "$body" in
+      *"$expect_body"*) : ;;
+      *)
+        echo "❌ $name — body missing «$expect_body» ($url)"
+        FAIL=$((FAIL+1))
+        return 1
+        ;;
+    esac
   fi
 
   echo "✅ $name — $http_code ($url)"
@@ -54,8 +60,9 @@ echo "==================================================================="
 echo "natura-franchise smoke test — host: $HOST"
 echo "==================================================================="
 
-# 1. Homepage 200 + содержит «Натура» (стабильный бренд-маркер)
-check "01-homepage"      "$HOST/"           "200" "Натура"
+# 1. Homepage 200 + содержит «Natura» (бренд-маркер). Кириллица «Натура»
+#    в HTML не используется — только латинский «Natura» в title/og.
+check "01-homepage"      "$HOST/"           "200" "Natura"
 
 # 2. /b.html (A/B-вариант — 50% трафика)
 check "02-b-variant"     "$HOST/b.html"     "200" "Natura"
@@ -69,9 +76,12 @@ check "04-ab-script"     "$HOST/ab.js"      "200"
 # 5. /styles.css (главный bundle стилей)
 check "05-styles"        "$HOST/styles.css" "200"
 
-# 6. ?_probe=true heartbeat — проверяем что probe-URL отвечает 200 (Sentry heartbeat
-#    включится только когда DSN заменен; проверка что страница не падает на query param)
-check "06-probe-heartbeat" "$HOST/?_probe=true" "200" "Натура"
+# 6. ?_probe=true heartbeat — Sentry-heartbeat включится только после
+#    подмены DSN; здесь проверяем что страница не падает на query-param.
+check "06-probe-heartbeat" "$HOST/?_probe=true" "200" "Natura"
+
+# 7. /sentry-test.html — self-test (noindex), доступна публично для оператора.
+check "07-sentry-test"   "$HOST/sentry-test.html" "200" "Sentry self-test"
 
 echo "==================================================================="
 echo "Result: $PASS pass / $FAIL fail"
