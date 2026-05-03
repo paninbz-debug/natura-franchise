@@ -1,0 +1,26 @@
+{
+  "id": "natura-broken-images",
+  "name": "Natura · broken hero images (>5/h)",
+  "project": "natura-franchise",
+  "conditions": [
+    {
+      "type": "event_frequency",
+      "value": 5,
+      "interval": "1h"
+    },
+    {
+      "type": "event_filter",
+      "filter": "transaction:\"img-load-error\" AND (url:*natura* OR url:*img/*)"
+    }
+  ],
+  "actions": [
+    {
+      "type": "telegram_webhook",
+      "secret": "TELEGRAM_DPA_ALERTS_WEBHOOK",
+      "title": "🖼 Natura · картинки 404 (>5/h)",
+      "body": "Hero/cases/team images падают. {{event.message}}. Проверить img/natura/* — могут быть поломаны после rebrand v3."
+    }
+  ],
+  "severity": "medium",
+  "_notes": "natura.html ссылается на img/natura/interior-team.jpg + 30+ других. Premium-brand: каждый broken-image снижает trust → хвост уходит. Требует error-listener: window.addEventListener('error', e => { if (e.target instanceof HTMLImageElement) Sentry.captureMessage('img-load-error', { level: 'warning', extra: { url: e.target.src } }) }, true)."
+}

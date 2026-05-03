@@ -1,0 +1,26 @@
+{
+  "id": "natura-telegram-error",
+  "name": "Natura · Telegram bot sendMessage failure",
+  "project": "natura-franchise",
+  "conditions": [
+    {
+      "type": "event_frequency",
+      "value": 1,
+      "interval": "5m"
+    },
+    {
+      "type": "event_filter",
+      "filter": "tags[lead_stage]:telegram AND level:error"
+    }
+  ],
+  "actions": [
+    {
+      "type": "telegram_webhook",
+      "secret": "TELEGRAM_DPA_ALERTS_WEBHOOK",
+      "title": "💸 Natura · Telegram primary канал упал",
+      "body": "Primary-канал (Telegram bot) фейлится. Если formsubmit тоже лежит — лиды теряются ПОЛНОСТЬЮ. Проверить TG_BOT_TOKEN и chat_id в script.js (но осторожно — токен был revoked в commit 9254bf0, может нужна перевыдача)."
+    }
+  ],
+  "severity": "critical",
+  "_notes": "Money-path #2. Связано с security-fix `9254bf0` (revoke leaked Telegram bot token from client-side JS). Если после revoke новый токен не подставлен, Sprint 15 alerts помогут это обнаружить. ВАЖНО: проверить, что текущий TG_BOT_TOKEN в client-side НЕ leaked в публичный repo (если leaked → revoke снова + перейти на server-side proxy в качестве долгосрочного fix)."
+}

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Sentry self-test — Natura Franchise</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="stylesheet" href="styles.css">
+<!-- ============ SENTRY (Sprint 15 observability) ============ -->
+<script src="https://browser.sentry-cdn.com/8.45.0/bundle.tracing.replay.min.js" crossorigin="anonymous"></script>
+<script>
+  (function () {
+    var DSN = "__SENTRY_DSN__";
+    if (window.Sentry && DSN.indexOf("https://") === 0) {
+      Sentry.init({
+        dsn: DSN,
+        release: "natura-franchise@0.1.0-sprint15",
+        environment: "production",
+        tracesSampleRate: 1.0
+      });
+    }
+  })();
+</script>
+<style>
+  body{font-family:'Manrope',system-ui,sans-serif;max-width:680px;margin:60px auto;padding:0 20px;color:#1a1a1a}
+  h1{font-family:'Cormorant Garamond',serif;font-size:32px;margin-bottom:8px}
+  .lead{color:#555;line-height:1.6;margin-bottom:32px}
+  .test-buttons{display:flex;flex-direction:column;gap:12px;margin:24px 0}
+  button{padding:14px 20px;font-size:14px;font-weight:600;border:1px solid #d8d8d8;border-radius:8px;background:#fff;cursor:pointer;text-align:left}
+  button:hover{background:#f5f5f5}
+  .status{margin-top:24px;padding:16px;border-radius:8px;background:#f5f5f5;font-family:ui-monospace,monospace;font-size:13px;white-space:pre-wrap;min-height:48px}
+  .ok{color:#0a7c2e}
+  .warn{color:#a04a00}
+  .err{color:#a00}
+</style>
+</head>
+<body>
+
+<h1>Sentry self-test</h1>
+<p class="lead">
+  Страница для проверки, что Sentry SDK подключён и шлёт события. После замены
+  DSN-placeholder в HTML — открыть эту страницу, нажать кнопки, проверить
+  Issues в Sentry UI. <strong>Не индексируется</strong> поисковиками.
+</p>
+
+<div class="test-buttons">
+  <button id="btn-throw">1. throw new Error — unhandled exception</button>
+  <button id="btn-message">2. Sentry.captureMessage — info-level</button>
+  <button id="btn-promise">3. Unhandled promise rejection</button>
+  <button id="btn-img">4. Broken image (404 → img-load-error)</button>
+  <button id="btn-status">5. Show Sentry SDK status</button>
+</div>
+
+<div id="status" class="status">Готов к тестам.</div>
+<img id="test-img" style="display:none" alt="">
+
+<script>
+  const status = document.getElementById('status');
+  const log = (msg, cls) => { status.className = 'status ' + (cls || ''); status.textContent = msg; };
+
+  document.getElementById('btn-throw').addEventListener('click', () => {
+    log('Бросаем Error… проверь Issues в Sentry.', 'warn');
+    setTimeout(() => { throw new Error('sentry-self-test: manual throw'); }, 50);
+  });
+
+  document.getElementById('btn-message').addEventListener('click', () => {
+    if (!window.Sentry) { log('Sentry не загружен.', 'err'); return; }
+    Sentry.captureMessage('sentry-self-test: manual ping', { level: 'info', tags: { test: 'manual' } });
+    log('captureMessage отправлен.', 'ok');
+  });
+
+  document.getElementById('btn-promise').addEventListener('click', () => {
+    log('Создаём unhandled promise rejection…', 'warn');
+    Promise.reject(new Error('sentry-self-test: unhandled rejection'));
+  });
+
+  document.getElementById('btn-img').addEventListener('click', () => {
+    const img = document.getElementById('test-img');
+    img.src = '/img/__nonexistent_' + Date.now() + '.jpg';
+    log('Запросили несуществующее изображение — должен сработать img-load-error listener.', 'warn');
+  });
+
+  document.getElementById('btn-status').addEventListener('click', () => {
+    const sdk = window.Sentry;
+    if (!sdk) { log('Sentry SDK не загружен (CDN недоступен?).', 'err'); return; }
+    const client = sdk.getClient && sdk.getClient();
+    const dsn = client && client.getDsn && client.getDsn();
+    if (!client || !dsn) { log('Sentry SDK загружен, но не инициализирован — DSN-placeholder не заменён?', 'warn'); return; }
+    log('Sentry активен. DSN host: ' + dsn.host + '\nProject: ' + dsn.projectId, 'ok');
+  });
+</script>
+
+</body>
+</html>

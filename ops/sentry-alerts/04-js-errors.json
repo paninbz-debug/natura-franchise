@@ -1,0 +1,26 @@
+{
+  "id": "natura-js-errors",
+  "name": "Natura · unhandled JS errors (>3/15m)",
+  "project": "natura-franchise",
+  "conditions": [
+    {
+      "type": "event_frequency",
+      "value": 3,
+      "interval": "15m"
+    },
+    {
+      "type": "event_filter",
+      "filter": "level:error AND !transaction:\"img-load-error\" AND !transaction:\"lead-form\""
+    }
+  ],
+  "actions": [
+    {
+      "type": "telegram_webhook",
+      "secret": "TELEGRAM_DPA_ALERTS_WEBHOOK",
+      "title": "🐛 Natura · JS exceptions burst",
+      "body": "Кратное число исключений в 15 мин. {{event.message}} {{issue.url}}. ab.js / script.js — частые виновники (cookie-API, fetch, scroll-spy)."
+    }
+  ],
+  "severity": "high",
+  "_notes": "Catch-all для unhandled JS errors. Excludes img-load-error (отдельный alert 03) и lead-form (отдельный alert 02). Будет ловить ab.js bugs, scroll-spy bugs, IntersectionObserver fail на старых браузерах."
+}

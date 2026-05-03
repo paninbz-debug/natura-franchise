@@ -1,0 +1,22 @@
+{
+  "id": "natura-ab-script",
+  "title": "Natura Franchise · /ab.js (A/B-split script)",
+  "url": "https://<NATURA_PROD_HOST>/ab.js",
+  "method": "GET",
+  "scheduleSeconds": 21600,
+  "requestTimeout": 15,
+  "saveResponses": false,
+  "expectations": {
+    "httpStatus": 200,
+    "headerContains": [
+      { "header": "content-type", "contains": "javascript" }
+    ]
+  },
+  "notify": {
+    "afterConsecutiveFailures": 1,
+    "channel": "telegram-webhook",
+    "secret": "TELEGRAM_DPA_ALERTS_WEBHOOK"
+  },
+  "tags": ["asset", "natura", "ab-test", "sprint15"],
+  "_notes": "ab.js — критичен для 50/50 cookie-persistent A/B. 6h interval хватит: если файл потеряется — alert успеет до прихода большого трафика."
+}

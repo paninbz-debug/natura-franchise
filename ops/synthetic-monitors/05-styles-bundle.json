@@ -1,0 +1,22 @@
+{
+  "id": "natura-styles",
+  "title": "Natura Franchise · /styles.css + /script.js (critical assets)",
+  "url": "https://<NATURA_PROD_HOST>/styles.css",
+  "method": "GET",
+  "scheduleSeconds": 43200,
+  "requestTimeout": 15,
+  "saveResponses": false,
+  "expectations": {
+    "httpStatus": 200,
+    "headerContains": [
+      { "header": "content-type", "contains": "css" }
+    ]
+  },
+  "notify": {
+    "afterConsecutiveFailures": 1,
+    "channel": "telegram-webhook",
+    "secret": "TELEGRAM_DPA_ALERTS_WEBHOOK"
+  },
+  "tags": ["asset", "natura", "sprint15"],
+  "_notes": "Критичный CSS (58KB) — без него страница рендерится unstyled. 12h interval. Аналогичный monitor для /script.js (20KB) можно создать вторым правилом или объединить в bundle-assertion если cron-job.org поддерживает multi-URL pings."
+}

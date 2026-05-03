@@ -1,0 +1,26 @@
+{
+  "id": "natura-lead-form-failures",
+  "name": "Natura · lead form failed (formsubmit + telegram)",
+  "project": "natura-franchise",
+  "conditions": [
+    {
+      "type": "event_frequency",
+      "value": 1,
+      "interval": "5m"
+    },
+    {
+      "type": "event_filter",
+      "filter": "tags[lead_stage]:* AND level:error"
+    }
+  ],
+  "actions": [
+    {
+      "type": "telegram_webhook",
+      "secret": "TELEGRAM_DPA_ALERTS_WEBHOOK",
+      "title": "💸 Natura · лид-форма падает",
+      "body": "Submit упал. stage={{tags.lead_stage}} {{event.message}} {{issue.url}}. Каждый фейл = пропущенный лид франшизы (avg чек ~5 млн ₽)."
+    }
+  ],
+  "severity": "critical",
+  "_notes": "Money-path. natura/script.js шлёт 2 параллельных запроса: (1) Telegram bot sendMessage, (2) formsubmit.co/ajax. Sentry должен ловить оба пути через try/catch + Sentry.captureException(err, { tags: { lead_stage: 'telegram' | 'formsubmit' } }). Threshold = 1 (instant). 5 млн ₽ чек оправдывает любой ложноположительный шум."
+}

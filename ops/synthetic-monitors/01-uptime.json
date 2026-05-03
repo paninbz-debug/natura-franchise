@@ -1,0 +1,20 @@
+{
+  "id": "natura-uptime",
+  "title": "Natura Franchise · landing uptime",
+  "url": "https://<NATURA_PROD_HOST>/",
+  "method": "GET",
+  "scheduleSeconds": 60,
+  "requestTimeout": 30,
+  "saveResponses": false,
+  "expectations": {
+    "httpStatus": 200,
+    "bodyContains": "Франшиза Natura"
+  },
+  "notify": {
+    "afterConsecutiveFailures": 2,
+    "channel": "telegram-webhook",
+    "secret": "TELEGRAM_DPA_ALERTS_WEBHOOK"
+  },
+  "tags": ["uptime", "natura", "sprint15"],
+  "_notes": "Static-site (HTML/CSS/JS). bodyContains '<title>Франшиза Natura' — стабильный признак, что index.html отдаётся целиком. Заменить <NATURA_PROD_HOST> на актуальный (CNAME = punycode 'натура-франшиза.рф')."
+}

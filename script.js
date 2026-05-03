@@ -293,7 +293,20 @@
     btn.addEventListener('click', e => {
       e.preventDefault();
       const ctx = btn.dataset.context || btn.dataset.formatPick || 'default';
-      openModal(ctx);
+      try {
+        openModal(ctx);
+      } catch (err) {
+        if (window.Sentry) Sentry.captureException(err, { tags: { cta: 'open_modal_throw', ctx, page: location.pathname } });
+      }
+      // Verify the modal actually opened — if not, this is a broken-CTA signal.
+      requestAnimationFrame(() => {
+        if (!modal.classList.contains('open') && window.Sentry) {
+          Sentry.captureMessage('cta-click-no-modal', {
+            level: 'warning',
+            tags: { ctx, page: location.pathname, cta_id: btn.id || btn.dataset.context || 'unknown' }
+          });
+        }
+      });
     });
   });
 
@@ -366,7 +379,7 @@
     }
 
     const text = lines.join('\n');
-    fetch('https://api.telegram.org/bot' + TG_BOT_TOKEN + '/sendMessage', {
+    return fetch('https://api.telegram.org/bot' + TG_BOT_TOKEN + '/sendMessage', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -374,7 +387,11 @@
         text: text,
         parse_mode: 'Markdown'
       })
-    }).catch(() => {});
+    }).then(res => {
+      if (!res.ok) throw new Error('telegram http ' + res.status);
+    }).catch(err => {
+      if (window.Sentry) Sentry.captureException(err, { tags: { lead_stage: 'telegram', page: location.pathname } });
+    });
   };
 
   const sendToEmail = (data) => {
@@ -392,44 +409,53 @@
         _subject: '🔔 Заявка на франшизу Natura — ' + (data.name || 'Новый лид'),
         _template: 'table'
       })
-    }).catch(() => {});
+    }).then(res => {
+      if (!res.ok) throw new Error('formsubmit http ' + res.status);
+    }).catch(err => {
+      if (window.Sentry) Sentry.captureException(err, { tags: { lead_stage: 'formsubmit', page: location.pathname } });
+    });
   };
 
   const handleSubmit = form => {
     form.addEventListener('submit', e => {
       e.preventDefault();
-      const raw = Object.fromEntries(new FormData(form).entries());
+      try {
+        const raw = Object.fromEntries(new FormData(form).entries());
 
-      // Enrich data
-      const data = {
-        ...raw,
-        _source_block: form.closest('.quiz__result') ? 'quiz' :
-                       form.closest('.modal') ? 'modal' :
-                       form.closest('.contact') ? 'final_form' : 'other',
-        _ab_variant: document.cookie.match(/natura_ab=([AB])/)?.[1] || 'A',
-        _page_url: window.location.href,
-        _quiz_format: quizState.answers.budget ? (
-          { togo:'TO-GO', cafe:'КОФЕЙНЯ', bistro:'БИСТРО' }[
-            parseFloat(quizState.answers.budget) <= 5 ? 'togo' :
-            parseFloat(quizState.answers.budget) <= 10 ? 'cafe' : 'bistro'
-          ] || ''
-        ) : '',
-        _quiz_city: quizState.answers.city || '',
-        _quiz_budget: quizState.answers.budget || '',
-        _quiz_exp: quizState.answers.exp || '',
-        _quiz_time: quizState.answers.time || '',
-        _quiz_priority: quizState.answers.priority || '',
-      };
+        // Enrich data
+        const data = {
+          ...raw,
+          _source_block: form.closest('.quiz__result') ? 'quiz' :
+                         form.closest('.modal') ? 'modal' :
+                         form.closest('.contact') ? 'final_form' : 'other',
+          _ab_variant: document.cookie.match(/natura_ab=([AB])/)?.[1] || 'A',
+          _page_url: window.location.href,
+          _quiz_format: quizState.answers.budget ? (
+            { togo:'TO-GO', cafe:'КОФЕЙНЯ', bistro:'БИСТРО' }[
+              parseFloat(quizState.answers.budget) <= 5 ? 'togo' :
+              parseFloat(quizState.answers.budget) <= 10 ? 'cafe' : 'bistro'
+            ] || ''
+          ) : '',
+          _quiz_city: quizState.answers.city || '',
+          _quiz_budget: quizState.answers.budget || '',
+          _quiz_exp: quizState.answers.exp || '',
+          _quiz_time: quizState.answers.time || '',
+          _quiz_priority: quizState.answers.priority || '',
+        };
 
-      console.log('[Natura Lead]', data);
+        console.log('[Natura Lead]', data);
 
-      // Send to both channels
-      sendToEmail(data);
-      sendToTelegram(data);
+        // Send to both channels
+        sendToEmail(data);
+        sendToTelegram(data);
 
-      form.reset();
-      closeModal();
-      showToast();
+        form.reset();
+        closeModal();
+        showToast();
+      } catch (err) {
+        if (window.Sentry) Sentry.captureException(err, { tags: { lead_stage: 'submit_handler', page: location.pathname } });
+        throw err;
+      }
     });
   };
 

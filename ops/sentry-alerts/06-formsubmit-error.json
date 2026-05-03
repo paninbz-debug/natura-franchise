@@ -1,0 +1,26 @@
+{
+  "id": "natura-formsubmit-error",
+  "name": "Natura · formsubmit.co external API failure",
+  "project": "natura-franchise",
+  "conditions": [
+    {
+      "type": "event_frequency",
+      "value": 2,
+      "interval": "10m"
+    },
+    {
+      "type": "event_filter",
+      "filter": "tags[lead_stage]:formsubmit AND level:error"
+    }
+  ],
+  "actions": [
+    {
+      "type": "telegram_webhook",
+      "secret": "TELEGRAM_DPA_ALERTS_WEBHOOK",
+      "title": "📨 Natura · formsubmit.co падает",
+      "body": "External email-relay (formsubmit.co) фейлится. Лид всё ещё уходит в Telegram (дублирующий канал), но почта на naturafranch@yandex.ru не доставляется. Возможно SLA formsubmit упал."
+    }
+  ],
+  "severity": "medium",
+  "_notes": "natura/script.js шлёт лид в 2 канала параллельно (telegram + formsubmit). Если telegram-канал жив, а formsubmit — нет: лид НЕ потерян (Telegram == primary), но email-копия для архива не доедет. Medium severity — не блокирует, но Данил должен знать."
+}

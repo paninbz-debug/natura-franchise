@@ -1,0 +1,22 @@
+{
+  "id": "natura-sentry-self-test",
+  "name": "Natura · sentry-self-test heartbeat missing",
+  "project": "natura-franchise",
+  "conditions": [
+    {
+      "type": "absence",
+      "filter": "transaction:\"sentry-self-test\" AND tags[mode]:ping",
+      "duration": "12h"
+    }
+  ],
+  "actions": [
+    {
+      "type": "telegram_webhook",
+      "secret": "TELEGRAM_DPA_ALERTS_WEBHOOK",
+      "title": "❓ Natura · Sentry heartbeat молчит >12h",
+      "body": "Heartbeat не приходил >12h. Возможно: (1) DSN не выставлен на проде, (2) cron-job.org self-test job отключён, (3) Sentry SDK не инициализирован."
+    }
+  ],
+  "severity": "medium",
+  "_notes": "Static-site вариант self-test: cron-job.org каждые 6h дёргает <NATURA_PROD_HOST>/?sentry-self-test=ping → script.js при наличии query-param шлёт Sentry.captureMessage('sentry-self-test', { tags: { mode: 'ping' } }). Если 12h нет события — alert. Альтернатива: отдельный sentry-test.html со script tag."
+}

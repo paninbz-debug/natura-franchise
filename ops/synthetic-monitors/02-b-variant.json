@@ -1,0 +1,20 @@
+{
+  "id": "natura-b-variant",
+  "title": "Natura Franchise · /b.html (A/B variant)",
+  "url": "https://<NATURA_PROD_HOST>/b.html",
+  "method": "GET",
+  "scheduleSeconds": 300,
+  "requestTimeout": 30,
+  "saveResponses": false,
+  "expectations": {
+    "httpStatus": 200,
+    "bodyContains": "Natura"
+  },
+  "notify": {
+    "afterConsecutiveFailures": 2,
+    "channel": "telegram-webhook",
+    "secret": "TELEGRAM_DPA_ALERTS_WEBHOOK"
+  },
+  "tags": ["uptime", "natura", "ab-test", "sprint15"],
+  "_notes": "B-variant A/B-теста (см. ab.js). 50% трафика — должна быть жива всегда. Если 404 — index.html шипнут без b.html → A/B сломан, конверсия половины клиентов 0."
+}

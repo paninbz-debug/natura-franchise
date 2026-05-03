@@ -1,0 +1,33 @@
+{
+  "id": "natura-frontend-vitals",
+  "name": "Natura · LCP/CLS regression (RUM)",
+  "project": "natura-franchise",
+  "conditions": [
+    {
+      "type": "metric",
+      "metric": "measurements.lcp",
+      "aggregate": "p75",
+      "comparison": ">",
+      "value": 2500,
+      "interval": "30m"
+    },
+    {
+      "type": "metric",
+      "metric": "measurements.cls",
+      "aggregate": "p75",
+      "comparison": ">",
+      "value": 0.1,
+      "interval": "30m"
+    }
+  ],
+  "actions": [
+    {
+      "type": "telegram_webhook",
+      "secret": "TELEGRAM_DPA_ALERTS_WEBHOOK",
+      "title": "📉 Natura · vitals деградация (LCP/CLS)",
+      "body": "p75 LCP/CLS превысил cap. {{event.measurements}} {{issue.url}}. Hero/font swap проверить."
+    }
+  ],
+  "severity": "medium",
+  "_notes": "Premium-brand SLA: LCP p75 ≤ 2500ms, CLS p75 ≤ 0.1. Cormorant Garamond + Manrope (4 weights) + 5 og-images — частая причина LCP > 3s на 4G. Требует @sentry/browser с tracesSampleRate=0.1 и replayIntegration."
+}

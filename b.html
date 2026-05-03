@@ -14,6 +14,37 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="stylesheet" href="styles.css">
+<!-- ============ SENTRY (Sprint 15 observability) ============ -->
+<!-- Replace __SENTRY_DSN__ after Sentry project creation. See ops/README.md. -->
+<script src="https://browser.sentry-cdn.com/8.45.0/bundle.tracing.replay.min.js" crossorigin="anonymous"></script>
+<script>
+  (function () {
+    var DSN = "__SENTRY_DSN__";
+    if (window.Sentry && DSN.indexOf("https://") === 0) {
+      Sentry.init({
+        dsn: DSN,
+        release: "natura-franchise@0.1.0-sprint15",
+        environment: "production",
+        tracesSampleRate: 0.1,
+        replaysSessionSampleRate: 0.05,
+        replaysOnErrorSampleRate: 1.0,
+        integrations: [Sentry.replayIntegration({ maskAllText: false, blockAllMedia: true })]
+      });
+    }
+    window.addEventListener('error', function (e) {
+      if (e.target instanceof HTMLImageElement && window.Sentry) {
+        Sentry.captureMessage('img-load-error', { level: 'warning', extra: { url: e.target.src, page: location.pathname } });
+      }
+    }, true);
+    try {
+      var qp = new URLSearchParams(window.location.search);
+      if (qp.get('_probe') === 'true') {
+        if (window.console) console.log('[probe] heartbeat ' + location.pathname);
+        if (window.Sentry) Sentry.captureMessage('synthetic-probe', { level: 'info', tags: { synthetic: 'true', page: location.pathname } });
+      }
+    } catch (e) { /* no-op */ }
+  })();
+</script>
 </head>
 <body>
 

@@ -1,0 +1,26 @@
+{
+  "id": "natura-cta-broken",
+  "name": "Natura · CTA click without form-open (>10/h)",
+  "project": "natura-franchise",
+  "conditions": [
+    {
+      "type": "event_frequency",
+      "value": 10,
+      "interval": "1h"
+    },
+    {
+      "type": "event_filter",
+      "filter": "transaction:\"cta-click-no-modal\""
+    }
+  ],
+  "actions": [
+    {
+      "type": "telegram_webhook",
+      "secret": "TELEGRAM_DPA_ALERTS_WEBHOOK",
+      "title": "🚫 Natura · CTA не открывает форму",
+      "body": "≥10 кликов за час с broken-modal. {{event.tags}}. Проверить openLeadModal() в script.js."
+    }
+  ],
+  "severity": "high",
+  "_notes": "Conversion-path: на natura все CTA («Оставить заявку» / «Связаться с основателями» / «Скачать презентацию») должны открывать modal с lead-form. Если modal не открылся — Sentry.captureMessage('cta-click-no-modal', { level: 'warning', tags: { cta_id, page } })."
+}

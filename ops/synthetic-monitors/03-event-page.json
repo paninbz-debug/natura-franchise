@@ -1,0 +1,20 @@
+{
+  "id": "natura-event-page",
+  "title": "Natura Franchise · /event.html",
+  "url": "https://<NATURA_PROD_HOST>/event.html",
+  "method": "GET",
+  "scheduleSeconds": 600,
+  "requestTimeout": 30,
+  "saveResponses": false,
+  "expectations": {
+    "httpStatus": 200,
+    "bodyContains": "Natura"
+  },
+  "notify": {
+    "afterConsecutiveFailures": 2,
+    "channel": "telegram-webhook",
+    "secret": "TELEGRAM_DPA_ALERTS_WEBHOOK"
+  },
+  "tags": ["uptime", "natura", "sprint15"],
+  "_notes": "Event-page (см. event.html — обновлено 2026-05-01 15:43). Если 404 — event-CTA в шапке/баннере ведут в никуда, лиды теряются."
+}
