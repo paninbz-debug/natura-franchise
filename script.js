@@ -549,4 +549,71 @@
     observer.observe(scarcityBar);
   }
 
+  /* ---------- TG SUBSCRIBE POPUP ---------- */
+  const tgPopup = document.getElementById('tgPopup');
+  if (tgPopup) {
+    const STORAGE_KEY = 'natura_tg_popup_dismissed_until';
+    const DELAY_MS = 25 * 1000;
+    const DISMISS_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+    const SUBSCRIBED_TTL_MS = 365 * 24 * 60 * 60 * 1000;
+
+    const ymTrack = (goal) => {
+      try {
+        if (typeof window.ym === 'function' && window.NATURA_YM_ID) {
+          window.ym(window.NATURA_YM_ID, 'reachGoal', goal);
+        }
+      } catch (e) { /* swallow */ }
+    };
+
+    const readDismissed = () => {
+      try { return parseInt(localStorage.getItem(STORAGE_KEY) || '0', 10) || 0; }
+      catch (e) { return 0; }
+    };
+    const writeDismissed = (ttlMs) => {
+      try { localStorage.setItem(STORAGE_KEY, String(Date.now() + ttlMs)); }
+      catch (e) { /* private mode etc. */ }
+    };
+
+    const closePopup = (reason) => {
+      if (!tgPopup.classList.contains('open')) return;
+      tgPopup.classList.remove('open');
+      tgPopup.setAttribute('aria-hidden', 'true');
+      if (reason === 'subscribed') {
+        writeDismissed(SUBSCRIBED_TTL_MS);
+        ymTrack('tg_popup_subscribed');
+      } else {
+        writeDismissed(DISMISS_TTL_MS);
+        ymTrack('tg_popup_dismissed');
+      }
+    };
+
+    const openPopup = () => {
+      const otherModalOpen = document.querySelector('.modal.open');
+      if (otherModalOpen || document.hidden) {
+        setTimeout(openPopup, 10 * 1000);
+        return;
+      }
+      if (Date.now() < readDismissed()) return;
+      tgPopup.classList.add('open');
+      tgPopup.setAttribute('aria-hidden', 'false');
+      ymTrack('tg_popup_shown');
+    };
+
+    tgPopup.querySelectorAll('[data-tg-close]').forEach(el => {
+      el.addEventListener('click', () => closePopup('dismiss'));
+    });
+    const subscribeLink = tgPopup.querySelector('[data-tg-subscribe]');
+    if (subscribeLink) {
+      subscribeLink.addEventListener('click', () => closePopup('subscribed'));
+    }
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && tgPopup.classList.contains('open')) closePopup('dismiss');
+    });
+
+    if (Date.now() >= readDismissed()) {
+      setTimeout(openPopup, DELAY_MS);
+    }
+    // TODO(sprint24): exit-intent variant — mousemove towards top edge triggers popup earlier
+  }
+
 })();
