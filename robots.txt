@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /sentry-test.html
+Disallow: /ab.js
+Disallow: /script.js
+
+Sitemap: https://xn----7sbaba2bg3bexixnd7d.xn--p1ai/sitemap.xml
