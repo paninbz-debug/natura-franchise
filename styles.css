@@ -1301,6 +1301,93 @@ h1,h2,h3,h4{
 .toast b{display:block;font-size:15px}
 .toast span{font-size:13px;color:var(--c-text-soft)}
 
+/* ============ TG SUBSCRIBE POPUP ============ */
+.tg-popup{
+  position:fixed;inset:0;z-index:250;
+  display:none;
+  align-items:center;justify-content:center;
+  padding:24px;
+}
+.tg-popup.open{display:flex}
+.tg-popup__backdrop{
+  position:absolute;inset:0;
+  background:rgba(26,26,26,.7);
+  backdrop-filter:blur(6px);
+  animation:fadeIn .3s;
+}
+.tg-popup__dialog{
+  position:relative;
+  background:#fff;
+  padding:44px 36px 36px;
+  border-radius:var(--radius-xl);
+  max-width:440px;
+  width:100%;
+  box-shadow:var(--shadow-lg);
+  animation:modalIn .4s var(--ease);
+  text-align:center;
+}
+.tg-popup__close{
+  position:absolute;top:14px;right:14px;
+  width:36px;height:36px;
+  border-radius:50%;
+  background:var(--c-bg);
+  border:0;cursor:pointer;
+  font-size:22px;line-height:1;color:var(--c-text-soft);
+  transition:all .2s var(--ease);
+  display:flex;align-items:center;justify-content:center;
+}
+.tg-popup__close:hover{background:var(--c-bg-alt);color:var(--c-text);transform:rotate(90deg)}
+.tg-popup__icon{
+  width:72px;height:72px;
+  margin:0 auto 18px;
+  border-radius:50%;
+  background:#2aabee;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;
+  box-shadow:0 12px 28px rgba(42,171,238,.32);
+}
+.tg-popup__icon svg{width:36px;height:36px}
+.tg-popup__title{
+  font-family:'Cormorant Garamond',Georgia,serif;
+  font-weight:600;
+  font-size:28px;
+  line-height:1.2;
+  margin:0 0 10px;
+  color:var(--c-dark);
+}
+.tg-popup__lead{
+  color:var(--c-text-soft);
+  font-size:15px;
+  line-height:1.5;
+  margin:0 0 24px;
+}
+.tg-popup__cta{
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  width:100%;
+  background:#2aabee;
+  color:#fff;
+  font-weight:600;
+  font-size:16px;
+  padding:16px 24px;
+  border-radius:var(--radius-lg);
+  text-decoration:none;
+  transition:all .2s var(--ease);
+}
+.tg-popup__cta:hover{background:#1d96d6;transform:translateY(-1px);box-shadow:0 10px 24px rgba(42,171,238,.3)}
+.tg-popup__cta svg{width:20px;height:20px}
+.tg-popup__handle{
+  display:block;
+  margin-top:12px;
+  font-size:13px;
+  color:var(--c-text-soft);
+}
+@media (max-width:480px){
+  .tg-popup{padding:16px}
+  .tg-popup__dialog{padding:36px 24px 28px}
+  .tg-popup__title{font-size:24px}
+  .tg-popup__lead{font-size:14px}
+}
+
 /* ============ ANNOUNCEMENT BAR ============ */
 .announce{
   background:var(--c-dark);
