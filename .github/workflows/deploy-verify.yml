@@ -1,0 +1,35 @@
+# Sprint G — pre-deploy verification gate (rollout 2026-05-10).
+#
+# Static HTML site → nginx → Railway. Нет lockfile / build step. Verify:
+# 1. Required files present (index.html, nginx.conf, Dockerfile, railway.json)
+# 2. Docker image builds успешно (catches Dockerfile-typo / missing files)
+# 3. HTML basic sanity (no broken `<` `>` mismatches via tidy / quick lint)
+name: Deploy Verify
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  verify:
+    name: required files + docker build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify required files
+        run: |
+          set -e
+          test -f index.html || { echo "MISSING index.html"; exit 1; }
+          test -f Dockerfile || { echo "MISSING Dockerfile"; exit 1; }
+          test -f nginx.conf || { echo "MISSING nginx.conf"; exit 1; }
+          test -f railway.json || { echo "MISSING railway.json"; exit 1; }
+      - name: Docker build (validates Dockerfile + COPY paths)
+        run: docker build -t natura-franchise:ci .
+      - name: HTML basic syntax check (tidy)
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq tidy
+          for f in *.html; do
+            tidy -q -e "$f" || echo "tidy warnings in $f (non-fatal)"
+          done
